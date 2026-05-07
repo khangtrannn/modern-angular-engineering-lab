@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "title": "Angular Keynote",
+      "date": "2025-12-10T09:00:00.000Z",
+      "description": "The future of the framework revealed. Join the Angular team as they unveil the latest advancements in reactivity, hydration, and tooling.",
+      "location": "Main Hall",
+      "image": "/images/angular-keynote.png",
+      "speakers": ["Sarah Drasner", "Minko Gechev", "Mark Techson"]
+    },
+    {
+      "id": "2",
+      "title": "Signals Deep Dive",
+      "date": "2025-12-11T11:00:00.000Z",
+      "description": "Mastering the primitive that changed everything. Learn how to architect complex state without the chaos of manual subscriptions.",
+      "location": "Room 3B",
+      "image": "/images/signals-deep-dive.png",
+      "speakers": ["Alex Rickabaugh", "Pawel Kozlowski"]
+    },
+    {
+      "id": "3",
+      "title": "Server-Side Rendering at Scale",
+      "date": "2025-12-21T14:00:00.000Z",
+      "description": "Hydration, Defer, and Performance. How to deliver instant TTI using Angular's new Incremental Hydration engine.",
+      "location": "Auditorium",
+      "image": "/images/ssr-at-scale.png",
+      "speakers": ["Jessica Janiuk"]
+    }
+  ],
+  "tickets": []
+}
