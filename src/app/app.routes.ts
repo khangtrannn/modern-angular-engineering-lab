@@ -5,8 +5,14 @@ import { CreateEvent } from './features/admin/create-event';
 import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: EventList },
-  { path: 'event/:id', component: EventDetails },
+  {
+    path: '',
+    loadComponent: () => import('./features/events/event-list').then((m) => m.EventList),
+  },
+  {
+    path: 'event/:id',
+    loadComponent: () => import('./features/events/event-details').then((m) => m.EventDetails),
+  },
   {
     path: 'admin/create',
     loadComponent: () => import('./features/admin/create-event').then((m) => m.CreateEvent),
