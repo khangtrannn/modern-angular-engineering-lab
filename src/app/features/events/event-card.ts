@@ -1,15 +1,14 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { Component, computed, input, linkedSignal, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { UiCard } from '../../shared/ui-card';
 
 @Component({
   selector: 'app-event-card',
-  imports: [DatePipe, RouterLink, NgOptimizedImage],
+  imports: [DatePipe, RouterLink, NgOptimizedImage, UiCard],
   template: `
-    <div
-      class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-    >
-      <div class="relative h-48 w-full bg-gray-200">
+    <app-ui-card>
+      <div card-header class="relative h-48 w-full bg-gray-200">
         <img
           [ngSrc]="image()"
           width="500"
@@ -54,17 +53,17 @@ import { RouterLink } from '@angular/router';
             Remove
           </button>
         </div>
-
-        <div class="mt-4 pt-4 border-t border-gray-100 text-right">
-          <a
-            [routerLink]="['/event', id()]"
-            class="text-blue-600 font-medium hover:underline cursor-pointer"
-          >
-            View Details →
-          </a>
-        </div>
       </div>
-    </div>
+
+      <div card-footer class="mt-4 pt-4 border-t border-gray-100 text-right">
+        <a
+          [routerLink]="['/event', id()]"
+          class="text-blue-600 font-medium hover:underline cursor-pointer"
+        >
+          View Details →
+        </a>
+      </div>
+    </app-ui-card>
   `,
 })
 export class EventCard {
