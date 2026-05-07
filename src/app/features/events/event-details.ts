@@ -4,10 +4,12 @@ import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/cart.service';
 import { VenueMap } from './venue-map';
+import { TabGroup } from '../../shared/tabs/tab-group';
+import { Tab } from '../../shared/tabs/tab';
 
 @Component({
   selector: 'app-event-details',
-  imports: [DatePipe, RouterLink, VenueMap, NgOptimizedImage],
+  imports: [DatePipe, RouterLink, VenueMap, NgOptimizedImage, TabGroup, Tab],
   template: `
     <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
       <!-- Back Button -->
@@ -37,30 +39,46 @@ import { VenueMap } from './venue-map';
             <p class="text-gray-500 text-lg">
               {{ event.date | date: 'fullDate' }} • {{ event.location }}
             </p>
-            <p class="text-gray-700 leading-relaxed text-lg">{{ event.description }}</p>
 
-            <!-- large spacer that pushes the map below the fold (deferred). -->
-            <div class="h-[2000px] p-12">
-              <p>Check the venue details below</p>
-            </div>
+            <app-tab-group>
+              <app-tab label="Overview">
+                <p class="text-gray-700 leading-relaxed text-lg">{{ event.description }}</p>
+              </app-tab>
 
-            <div class="bg-gray-50 p-6 rounded-xl h-fit border border-gray-100">
-              <!--
-                @defer (hydrate on viewport)
-                SSR Behavior: The SERVER renders the @placeholder content (or the main content if compatible).
-                Hydration Behavior: The browser downloads the JS for this block ONLY when it enters the viewport.
-              -->
-              @defer (hydrate on viewport) {
-                <app-venue-map />
-              } @placeholder {
-                <!-- Rendered instantly on Server, visible immediately -->
-                <div
-                  class="h-140 bg-gray-100 rounded mb-4 flex items-center justify-center border-2 border-dashed border-gray-300"
-                >
-                  <span class="text-gray-400">Map Loading...</span>
-                </div>
-              }
-            </div>
+              <app-tab label="Venue">
+                <p class="mb-4 text-gray-600">Location: {{ event.location }}</p>
+
+                <!-- Move our Defer block from Mod 1 here! -->
+                @defer (hydrate on viewport) {
+                  <app-venue-map />
+                } @placeholder {
+                  <div class="h-64 bg-gray-100 flex items-center justify-center">
+                    Loading Map...
+                  </div>
+                }
+              </app-tab>
+
+              <app-tab label="Speakers">
+                @if (event.speakers.length > 0) {
+                  <ul class="space-y-3">
+                    @for (speaker of event.speakers; track speaker) {
+                      <li class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div
+                          class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold"
+                        >
+                          {{ speaker.charAt(0) }}
+                        </div>
+                        <span class="text-gray-700 font-medium">{{ speaker }}</span>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <div class="p-4 bg-yellow-50 text-yellow-800 rounded">
+                    Speaker list coming soon.
+                  </div>
+                }
+              </app-tab>
+            </app-tab-group>
           </div>
 
           <!-- Right: Actions -->
