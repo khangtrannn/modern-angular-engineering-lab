@@ -1,0 +1,1 @@
+- Using square brackets in the template tells Angular to evaluate the value as an expression or property reference.
