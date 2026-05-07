@@ -1,12 +1,13 @@
 import { Component, inject, input } from '@angular/core';
 import { EventsService } from '../../core/events.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/cart.service';
+import { VenueMap } from './venue-map';
 
 @Component({
   selector: 'app-event-details',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, VenueMap, NgOptimizedImage],
   template: `
     <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
       <!-- Back Button -->
@@ -37,21 +38,58 @@ import { CartService } from '../../core/cart.service';
               {{ event.date | date: 'fullDate' }} • {{ event.location }}
             </p>
             <p class="text-gray-700 leading-relaxed text-lg">{{ event.description }}</p>
+
+            <!-- large spacer that pushes the map below the fold (deferred). -->
+            <div class="h-[2000px] p-12">
+              <p>Check the venue details below</p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-xl h-fit border border-gray-100">
+              <!--
+                @defer (hydrate on viewport)
+                SSR Behavior: The SERVER renders the @placeholder content (or the main content if compatible).
+                Hydration Behavior: The browser downloads the JS for this block ONLY when it enters the viewport.
+              -->
+              @defer (hydrate on viewport) {
+                <app-venue-map />
+              } @placeholder {
+                <!-- Rendered instantly on Server, visible immediately -->
+                <div
+                  class="h-140 bg-gray-100 rounded mb-4 flex items-center justify-center border-2 border-dashed border-gray-300"
+                >
+                  <span class="text-gray-400">Map Loading...</span>
+                </div>
+              }
+            </div>
           </div>
 
           <!-- Right: Actions -->
           <div class="bg-gray-50 p-6 rounded-xl h-fit border border-gray-100">
             <div class="h-48 bg-gray-200 rounded mb-4 overflow-hidden">
               <!-- We will optimize this image in Day 2 -->
-              <img [src]="event.image" class="w-full h-full object-cover" />
+              <img
+                [ngSrc]="event.image"
+                height="200"
+                width="200"
+                priority
+                class="w-full h-full object-cover"
+              />
             </div>
 
-            <button
-              class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
-              (click)="addTicket()"
-            >
-              Buy Tickets
-            </button>
+            @defer (hydrate on interaction) {
+              <button
+                class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
+                (click)="addTicket()"
+              >
+                Buy Tickets
+              </button>
+            } @placeholder {
+              <button
+                class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
+              >
+                Buy Tickets
+              </button>
+            }
           </div>
         </div>
       }
