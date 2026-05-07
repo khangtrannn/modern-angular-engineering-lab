@@ -1,0 +1,47 @@
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { TICKETS_URL } from './tokens';
+
+interface TicketEntry {
+  id: string;
+  eventId: string;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CartService {
+  #http = inject(HttpClient);
+  #ticketsUrl = inject(TICKETS_URL);
+
+  #ticketIds = signal<string[]>([]);
+
+  readonly count = computed(() => this.#ticketIds().length);
+
+  constructor() {
+    this.#loadTickets();
+  }
+
+  addTicket(eventId: string) {
+    const previousIds = this.#ticketIds();
+
+    this.#ticketIds.set([...previousIds, eventId]);
+
+    this.#http.post(this.#ticketsUrl, { eventId }).subscribe({
+      next: () => console.log('Optimistic update was successful'),
+      error: () => {
+        console.error('Failed to add ticket, reverting optimistic update', eventId);
+        this.#ticketIds.set(previousIds);
+      },
+    });
+  }
+
+  #loadTickets() {
+    this.#http.get<TicketEntry[]>(this.#ticketsUrl).subscribe({
+      next: (data) => {
+        const ids = data.map((t) => t.eventId);
+        this.#ticketIds.set(ids);
+      },
+    });
+  }
+}
