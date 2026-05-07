@@ -28,10 +28,11 @@ export class CartService {
     this.#ticketIds.set([...previousIds, eventId]);
 
     this.#http.post(this.#ticketsUrl, { eventId }).subscribe({
-      next: () => console.log('Optimistic update was successful'),
-      error: () => {
-        console.error('Failed to add ticket, reverting optimistic update', eventId);
+      next: () => console.log('Ticket synced to backend', eventId),
+      error: (err) => {
+        console.error('Sync failed, reverting state', err);
         this.#ticketIds.set(previousIds);
+        alert('Failed to add ticket to cart.');
       },
     });
   }
