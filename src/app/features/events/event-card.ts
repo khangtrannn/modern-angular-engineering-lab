@@ -1,7 +1,9 @@
-import { Component, computed, input, linkedSignal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, computed, input, linkedSignal, output } from '@angular/core';
 
 @Component({
   selector: 'app-event-card',
+  imports: [DatePipe],
   template: `
     <div
       class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -16,8 +18,9 @@ import { Component, computed, input, linkedSignal } from '@angular/core';
 
       <div class="p-6">
         <div class="flex justify-between items-center mt-4">
-          <!-- TODO Mod 1: Add Date using DatePipe -->
-          <p class="text-sm text-blue-600 font-semibold mb-2">TBA</p>
+          <p class="text-sm text-blue-600 font-semibold mb-2">
+            {{ (date() | date: 'mediumDate') || 'TBA' }}
+          </p>
 
           @let days = daysUntil();
           @if (days !== null) {
@@ -40,8 +43,12 @@ import { Component, computed, input, linkedSignal } from '@angular/core';
             <span>{{ isFavorite() ? '♥' : '♡' }}</span> Like
           </button>
 
-          <!-- TODO Mod 1: Add Output -->
-          <button class="text-gray-400 text-sm hover:text-gray-600 cursor-pointer">Remove</button>
+          <button
+            (click)="removeEvent()"
+            class="text-gray-400 text-sm hover:text-gray-600 cursor-pointer"
+          >
+            Remove
+          </button>
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-100 text-right">
@@ -56,6 +63,7 @@ export class EventCard {
   image = input.required<string>();
   date = input<string>();
   initialLike = input(false);
+  delete = output();
 
   isFavorite = linkedSignal(() => this.initialLike());
 
@@ -72,5 +80,9 @@ export class EventCard {
 
   toggleFavorite() {
     this.isFavorite.set(!this.isFavorite());
+  }
+
+  removeEvent() {
+    this.delete.emit();
   }
 }

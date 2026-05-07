@@ -19,11 +19,12 @@ import { EventCard } from './event-card';
         title="Angular Keynote"
         image="/images/angular-keynote.png"
         date="2025-12-10T09:00:00.000Z"
+        (delete)="console.log('Delete Clicked')"
       />
       <app-event-card title="Signals Deep Dive" image="/images/signals-deep-dive.png" />
     </div>
   `,
 })
 export class EventList {
-  // TODO Mod 2: Inject Service and use resource()
+  readonly console = console;
 }
