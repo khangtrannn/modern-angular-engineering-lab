@@ -29,7 +29,7 @@ import { EventsService } from '../../core/events.service';
             [title]="event.title"
             [image]="event.image"
             [date]="event.date"
-            (delete)="console.log('Delete Clicked')"
+            (delete)="deleteEvent(event.id)"
           />
         }
       </div>
@@ -43,4 +43,16 @@ export class EventList {
   searchQuery = signal('');
 
   readonly events = this.eventsService.getEventsResource(this.searchQuery);
+
+  deleteEvent(id: string) {
+    this.eventsService.deleteEvent(id).subscribe({
+      next: () => {
+        this.events.reload();
+      },
+      error: (err) => {
+        console.error('Failed to delete event', err);
+        alert('Could not delete event. Please try again later.');
+      },
+    });
+  }
 }
