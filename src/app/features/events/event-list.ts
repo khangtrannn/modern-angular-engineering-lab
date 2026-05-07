@@ -27,6 +27,7 @@ import { EventsService } from '../../core/events.service';
         @for (event of events.value(); track event.id) {
           <app-event-card
             [id]="event.id"
+            [trackingId]="'event_card_' + event.id"
             [title]="event.title"
             [image]="event.image"
             [date]="event.date"
