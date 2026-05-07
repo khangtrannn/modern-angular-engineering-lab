@@ -23,4 +23,8 @@ export class EventsService {
   deleteEvent(id: string) {
     return this.#http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  createEvent(event: Omit<DevFestEvent, 'id'>) {
+    return this.#http.post<DevFestEvent>(this.apiUrl, event);
+  }
 }
