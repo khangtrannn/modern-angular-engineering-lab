@@ -56,14 +56,14 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "devfest-manager:build:production"
+              "buildTarget": "modern-angular-engineering-lab:build:production"
             },
             "development": {
-              "buildTarget": "devfest-manager:build:development"
-            }modern-angular-engineering-lab
+              "buildTarget": "modern-angular-engineering-lab:build:development"
+            }
           },
           "defaultConfiguration": "development"
-        },modern-angular-engineering-lab
+        },
         "test": {
           "builder": "@angular/build:unit-test"
         }
