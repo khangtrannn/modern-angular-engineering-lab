@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-event-card',
@@ -20,9 +20,14 @@ import { Component, input } from '@angular/core';
           <p class="text-sm text-blue-600 font-semibold mb-2">TBA</p>
 
           <!-- TODO Mod 1: Add daysUntil() using @let -->
-          <div
-            class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm"
-          ></div>
+          @let days = daysUntil();
+          @if (days !== null) {
+            <div
+              class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm"
+            >
+              {{ days }}
+            </div>
+          }
         </div>
 
         <!-- TODO Mod 1: Add Title Input -->
@@ -49,4 +54,15 @@ export class EventCard {
   title = input.required<string>();
   image = input.required<string>();
   date = input<string>();
+
+  daysUntil = computed(() => {
+    const eventDate = this.date();
+    if (!eventDate) return null;
+
+    const today = new Date();
+    const eventDay = new Date(eventDate);
+    const diffTime = eventDay.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? `In ${diffDays} days` : diffDays < 0 ? 'Past Event' : 'Happening Now!';
+  });
 }
