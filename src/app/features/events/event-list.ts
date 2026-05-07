@@ -26,6 +26,7 @@ import { EventsService } from '../../core/events.service';
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (event of events.value(); track event.id) {
           <app-event-card
+            [id]="event.id"
             [title]="event.title"
             [image]="event.image"
             [date]="event.date"
