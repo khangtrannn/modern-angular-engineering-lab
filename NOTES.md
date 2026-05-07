@@ -8,3 +8,8 @@ Typically, historically, you if you were ever used like Angular Universal or oth
 ### withEventReplay
 
 Well, say you have a DOM that's already there and users are super fast and starts clicking some of the buttons or does some certain things. Well, because the Angular is still bootstrapping the DOM, some of those could be missed. And we don't want that. So what Angular does instead is tracks where user clicked, and if things were not hydrated yet, meaning there's no JavaScript, Angular functionality that wraps it yet, then once it wraps it, it will replay all the clicks to those components.
+
+## SignalStore vs. NgRx Store
+
+- Event-based
+- Command-based
