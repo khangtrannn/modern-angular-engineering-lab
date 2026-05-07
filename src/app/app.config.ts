@@ -9,6 +9,7 @@ import { IMAGE_LOADER, ImageLoaderConfig } from '@angular/common';
 
 import { routes } from './app.routes';
 import { API_URL } from './core/tokens';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,5 +29,6 @@ export const appConfig: ApplicationConfig = {
         return `https://khangtran.dev/cdn-cgi/image/width=${config.width},format=auto/https://storage.googleapis.com/dev-sandbox-09.firebasestorage.app/${src}`;
       },
     },
+    provideClientHydration(withEventReplay()),
   ],
 };
