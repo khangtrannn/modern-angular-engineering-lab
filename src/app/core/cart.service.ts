@@ -1,5 +1,7 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { catchError, EMPTY, exhaustMap, Subject, tap, throwError } from 'rxjs';
 import { TICKETS_URL } from './tokens';
 
 interface TicketEntry {
@@ -16,33 +18,48 @@ export class CartService {
 
   #ticketIds = signal<string[]>([]);
 
+  #addTicket$ = new Subject<string>();
+
   readonly count = computed(() => this.#ticketIds().length);
 
   constructor() {
     this.#loadTickets();
+    this.#handleAddTicket();
   }
 
   addTicket(eventId: string) {
-    const previousIds = this.#ticketIds();
+    this.#addTicket$.next(eventId);
+  }
 
-    this.#ticketIds.set([...previousIds, eventId]);
+  #handleAddTicket() {
+    this.#addTicket$
+      .pipe(
+        exhaustMap((eventId) => {
+          const previousIds = this.#ticketIds();
+          this.#ticketIds.set([...previousIds, eventId]);
 
-    this.#http.post(this.#ticketsUrl, { eventId }).subscribe({
-      next: () => console.log('Ticket synced to backend', eventId),
-      error: (err) => {
-        console.error('Sync failed, reverting state', err);
-        this.#ticketIds.set(previousIds);
-        alert('Failed to add ticket to cart.');
-      },
-    });
+          return this.#http.post<TicketEntry>(this.#ticketsUrl, { eventId }).pipe(
+            tap(() => console.log('Ticket synced to backend', eventId)),
+            catchError((err) => {
+              console.error('Sync failed, reverting state', err);
+              this.#ticketIds.set(previousIds);
+              return EMPTY;
+            }),
+          );
+        }),
+      )
+      .subscribe();
   }
 
   #loadTickets() {
-    this.#http.get<TicketEntry[]>(this.#ticketsUrl).subscribe({
-      next: (data) => {
-        const ids = data.map((t) => t.eventId);
-        this.#ticketIds.set(ids);
-      },
-    });
+    this.#http
+      .get<TicketEntry[]>(this.#ticketsUrl)
+      .pipe(catchError(() => EMPTY))
+      .subscribe({
+        next: (data) => {
+          const ids = data.map((t) => t.eventId);
+          this.#ticketIds.set(ids);
+        },
+      });
   }
 }
