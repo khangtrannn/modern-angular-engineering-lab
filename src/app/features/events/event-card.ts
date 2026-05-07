@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-event-card',
@@ -6,7 +6,13 @@ import { Component } from '@angular/core';
     <div
       class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
-      <!-- TODO: Add Image -->
+      <div class="relative h-48 w-full bg-gray-200">
+        <img
+          [src]="image()"
+          class="object-cover w-full h-full max-h-full max-w-full"
+          alt="Event thumbnail"
+        />
+      </div>
 
       <div class="p-6">
         <div class="flex justify-between items-center mt-4">
@@ -20,7 +26,7 @@ import { Component } from '@angular/core';
         </div>
 
         <!-- TODO Mod 1: Add Title Input -->
-        <h3 class="text-xl font-bold text-gray-800 my-2">Title Placeholder</h3>
+        <h3 class="text-xl font-bold text-gray-800 my-2">{{ title() }}</h3>
 
         <div class="flex justify-between items-center mt-4">
           <!-- TODO Mod 1: Add Derived State (Like Button) -->
@@ -40,5 +46,7 @@ import { Component } from '@angular/core';
   `,
 })
 export class EventCard {
-  // TODO Mod 1: Implement input(), output(), and model()
+  title = input.required<string>();
+  image = input.required<string>();
+  date = input<string>();
 }
