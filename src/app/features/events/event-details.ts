@@ -6,6 +6,7 @@ import { CartService } from '../../core/cart.service';
 import { VenueMap } from './venue-map';
 import { TabGroup } from '../../shared/tabs/tab-group';
 import { Tab } from '../../shared/tabs/tab';
+import { CartStore } from '../../core/cart.store';
 
 @Component({
   selector: 'app-event-details',
@@ -99,7 +100,11 @@ import { Tab } from '../../shared/tabs/tab';
                 class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
                 (click)="addTicket()"
               >
-                Buy Tickets
+                @if (cartStore.isPending()) {
+                  Processing...
+                } @else {
+                  Buy Tickets
+                }
               </button>
             } @placeholder {
               <button
@@ -118,10 +123,14 @@ export class EventDetails {
   readonly id = input.required<string>();
 
   readonly eventsService = inject(EventsService);
-  readonly cartService = inject(CartService);
+
+  // readonly cartService = inject(CartService);
+  readonly cartStore = inject(CartStore);
+
   readonly eventResource = this.eventsService.getEventResource(this.id);
 
   addTicket() {
-    this.cartService.addTicket(this.id());
+    // this.cartService.addTicket(this.id());
+    this.cartStore.addToCart({ eventId: this.id() });
   }
 }
